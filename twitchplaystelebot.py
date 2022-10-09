@@ -6,10 +6,7 @@ import socket
 import cfg
 import os.path
 import sys
-#import pyttsx3
 sys.dont_write_bytecode = True
-
-#engine = pyttsx3.init()
 
 q = queue.Queue()
 
@@ -33,8 +30,14 @@ def listen():
 		username = re.search(r"\w+", response).group(0)
 		message = CHAT_MSG.sub("", response)
 		message = message[:-2]
-		if not message.startswith(":tmi.twitch.tv") and not message.startswith(":pythonchatbot"):
-			q.put([username,message])
+		if not username == "tmi" and not username == cfg.NICK:
+			#single-user mode
+			if len(sys.argv) > 1:
+				if(username == sys.argv[1]):
+					q.put([username,message])
+			#multi-user mode (default)
+			else:
+				q.put([username, message])
 
 def listener():
 	while True:
@@ -44,9 +47,8 @@ def listener():
 def worker():
 	while True:
 		un_and_m = q.get()
-#		engine.say(un_and_m[1])
-#		engine.runAndWait()
-		os.system("say " + un_and_m[1])
+		print(un_and_m[0] + ": " + un_and_m[1])
+		os.system("say " + un_and_m[1].replace('"', '').replace("'", '').replace('(', '').replace(')', ''))
 		q.task_done()
 
 threading.Thread(target=listener, daemon=True).start()
