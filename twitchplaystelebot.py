@@ -32,12 +32,15 @@ def listen():
 		message = message[:-2]
 		if not username == "tmi" and not username == cfg.NICK:
 			#single-user mode
+			#(doesn't require quoted strings)
 			if len(sys.argv) > 1:
 				if(username == sys.argv[1]):
 					q.put([username,message])
 			#multi-user mode (default)
+			#(requires double-quoted strings)
 			else:
-				q.put([username, message])
+				if(message.startswith('"') and message.endswith('"')):
+					q.put([username, message])
 
 def listener():
 	while True:
