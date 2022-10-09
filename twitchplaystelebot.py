@@ -6,10 +6,10 @@ import socket
 import cfg
 import os.path
 import sys
-import pyttsx3
+#import pyttsx3
 sys.dont_write_bytecode = True
 
-engine = pyttsx3.init()
+#engine = pyttsx3.init()
 
 q = queue.Queue()
 
@@ -44,8 +44,9 @@ def listener():
 def worker():
 	while True:
 		un_and_m = q.get()
-		engine.say(un_and_m[1])
-		engine.runAndWait()
+#		engine.say(un_and_m[1])
+#		engine.runAndWait()
+		os.system("say " + un_and_m[1])
 		q.task_done()
 
 threading.Thread(target=listener, daemon=True).start()
